@@ -3444,7 +3444,7 @@ select.select_search{border:1px solid #ccc;height: 25px;max-width: 110px}
   padding:10px; min-height:200px;text-align:center
 }
 .wrapper_img_upload{
-  width:120px;height:130px;position:relative; margin: auto;
+  position:relative; margin: auto;
 }
 img.img-up{
   width: 120px;
@@ -3455,4 +3455,9 @@ img.img-up{
 }
 #load_hinh{
   margin-top: 15px;
+}
+label.error{
+  color:red;
+  font-size: 11px;
+  font-style: italic;
 }

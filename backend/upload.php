@@ -94,32 +94,34 @@ mkdir("../upload/".date('Y/m/d')."/",0777,true);
 $url = "../upload/".date('Y/m/d')."/";
 $html ='';
 
-for($i=0;$i<count($_FILES["myfile"]['name']);$i++){
-    
-    $extension = end(explode(".", $_FILES["myfile"]["name"][$i]));
+if($_FILES['myfile']['size'] > 200000){   
+    echo json_encode(array('error' => 'Maximum upload file size is 200KB'));
+}else{ 
+
+    $extension = end(explode(".", $_FILES["myfile"]["name"]));
+
     if ((
-        ($_FILES["myfile"]["type"][$i] == "image/gif") 
-        || ($_FILES["myfile"]["type"][$i] == "image/jpeg") 
-        || ($_FILES["myfile"]["type"][$i] == "image/png")
-        || ($_FILES["myfile"]["type"][$i] == "image/pjpeg" )  
-        || ($_FILES["myfile"]["type"][$i] == "application/x-shockwave-flash" ))   
+        ($_FILES["myfile"]["type"] == "image/gif") 
+        || ($_FILES["myfile"]["type"] == "image/jpeg") 
+        || ($_FILES["myfile"]["type"] == "image/png")
+        || ($_FILES["myfile"]["type"] == "image/pjpeg" )  
+        || ($_FILES["myfile"]["type"] == "application/x-shockwave-flash" ))   
     && in_array($extension, $allowedExts))
       {
-      if ($_FILES["myfile"]["error"][$i] > 0)
+      if ($_FILES["myfile"]["error"] > 0)
         {
-        //echo "Return Code: " . $_FILES["myfile"]["error"][$i] . "<br />";
+        //echo "Return Code: " . $_FILES["myfile"]["error"] . "<br />";
         }
       else
         {       
-    
-        if (file_exists($url. $_FILES["myfile"]["name"][$i]))
+
+        if (file_exists($url. $_FILES["myfile"]["name"]))
           {
-          //echo $_FILES["myfile"]["name"][$i] . " đã tồn tại. "."<br />";       
+          //echo $_FILES["myfile"]["name"] . " đã tồn tại. "."<br />";       
           }
         else
           {
-
-            $arrPartImage = explode('.', $_FILES["myfile"]["name"][$i]);
+            $arrPartImage = explode('.', $_FILES["myfile"]["name"]);
 
             // Get image extension
             $imgExt = array_pop($arrPartImage);
@@ -131,24 +133,36 @@ for($i=0;$i<count($_FILES["myfile"]['name']);$i++){
             $img = $img."_".time();
             $name = "{$img}.{$imgExt}";           
 
-            move_uploaded_file($_FILES["myfile"]["tmp_name"][$i],$url.$name);
+            move_uploaded_file($_FILES["myfile"]["tmp_name"],$url.$name);
             $url_image_tmp = $url.$name;
 
             $url_image = str_replace('../', '', $url).$name;
 
           }
           }
+        $checked = ($i == 0 && $is_update!=1) ? "checked='checked'" : ""; 
+        $html.='<div class="col-md-12"><div class="wrapper_img_upload">';
+
+        if($imgExt != 'swf'){
+            $html.='<img src="'.$url_image_tmp.'" class="img-thumbnail">';    
+        }else{
+            $html.='<object type="application/x-shockwave-flash" data="'.$url_image_tmp.'">';
+            $html.='<param name="movie" value="'.$url_image_tmp.'" />';
+            $html.='<param name="quality" value="high"/>';
+            $html.='</object>';
+        }
+        $html.='<img data-value="'.$url_image.'" src="img/remove.png" class="remove_image" data-id="">';
+        $html.='</div>';    
+        $html.='<input type="hidden" name="file_url"  aria-required="true" required="required" value="'.$url_image.'" /></div>';
+        $html.='<input type="hidden" name="file_type" value="'.$imgExt.'" />';
+        $arrReturn['error'] = '';
+        $arrReturn['html'] = $html;
+
+        echo json_encode($arrReturn);
+    }else{
+        echo json_encode(array('error' => 'File type not allow!'));
     }
-    $checked = ($i == 0 && $is_update!=1) ? "checked='checked'" : ""; 
-    $html.='<div class="col-md-3 image_upload">';
-    $html.='<div class="wrapper_img_upload"><img src="'.$url_image_tmp.'" class="img-up img-thumbnail">';
-    $html.='<img data-value="'.$url_image.'" src="img/remove.png" class="remove_image" data-id="">';
-    $html.='</div>';
-    $html.='<p style="margin-top:10px"><input type="radio" '.$checked.' name="image_url" value="'.$url_image.'" /> Ảnh đại diện</p>';
-    $html.='<input type="hidden" name="imageArr[]" value="'.$url_image.'" /></div>';
+
+
 }
-
-$arrReturn['html'] = $html;
-
-echo json_encode($arrReturn);
 ?>

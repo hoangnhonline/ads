@@ -77,7 +77,7 @@ class Backend {
         $column = rtrim($column,",");
         $values = rtrim($values,",");
         $sql = "INSERT INTO ".$table."(".$column.") VALUES (".$values.")";
-        mysql_query($sql) or die(mysql_error().$sql);
+        mysql_query($sql) ;//or die(mysql_error().$sql);
         $id = mysql_insert_id();
         return $id;
     }

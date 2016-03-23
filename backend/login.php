@@ -11,7 +11,7 @@ if (isset($_POST['btnLog'])==true){
 <html class="bg-black">
     <head>
         <meta charset="UTF-8">
-        <title>Admin lktartimage.com | Log in</title>
+        <title>bicthads.com | Log in</title>
         <meta content='width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no' name='viewport'>
         <!-- bootstrap 3.0.2 -->
         <link href="<?php echo STATIC_URL; ?>css/bootstrap.min.css" rel="stylesheet" type="text/css" />
